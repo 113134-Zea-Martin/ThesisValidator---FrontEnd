@@ -1,0 +1,148 @@
+<div class="container-fluid h-100 d-flex flex-column p-0">
+  <!-- Messages Area -->
+  <div class="flex-grow-1 overflow-auto chat-bg py-4">
+    <div class="container" style="max-width: 900px;">
+      <div class="text-center mb-4">
+        <h2 class="display-6 fw-bold">
+          <i class="bi bi-robot me-2"></i>
+          Thesis Assistant AI
+        </h2>
+        <p class="text-muted mb-3">Ask questions about your uploaded documents</p>
+        <div class="d-flex gap-2 justify-content-center">
+          <button 
+            class="btn btn-outline-primary btn-sm"
+            (click)="loadPreviousConversations()" 
+            [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-clock-history me-2"></i>
+            Load Previous Chats
+          </button>
+          <button 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="newConversation()" 
+            [disabled]="isLoading">
+            <i class="bi bi-plus-circle me-2"></i>
+            New Conversation
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!messages.length && !isLoading" class="text-center text-muted py-5">
+        <i class="bi bi-chat-dots display-4 d-block mb-3"></i>
+        <p class="mb-1">No messages yet</p>
+        <small>Start by asking something about your thesis</small>
+      </div>
+
+      <div class="message mb-3"
+           *ngFor="let message of messages"
+           [ngClass]="{'align-end': message.role === 'user'}">
+        <div class="d-flex" [ngClass]="{'flex-row-reverse': message.role === 'user'}">
+          <div class="avatar" [ngClass]="message.role">
+            <i class="bi" [ngClass]="message.role === 'assistant' ? 'bi-stars' : 'bi-person'"></i>
+          </div>
+          <div class="bubble shadow-sm"
+               [ngClass]="message.role">
+            <div class="d-flex align-items-center mb-2">
+              <strong class="small" [ngClass]="{'text-primary': message.role === 'assistant', 'text-white': message.role === 'user'}">
+                {{ message.role === 'assistant' ? 'Astronom IA' : 'You' }}
+              </strong>
+            </div>
+            <div class="content mb-2" style="white-space: pre-wrap;">{{ message.content }}</div>
+            <button
+              *ngIf="message.role === 'assistant' && message.contextUsed"
+              class="btn btn-sm btn-outline-primary mt-2"
+              (click)="viewSources(message.contextUsed)">
+              <i class="bi bi-search me-1"></i> View Sources
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center my-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-2">Analyzing documents...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="bg-white border-top py-3 px-4 shadow-sm">
+    <div class="container" style="max-width: 900px;">
+      <div class="input-group input-group-lg">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Ask about your astronomy thesis..."
+          [(ngModel)]="inputMessage"
+          (keyup.enter)="sendMessage()"
+          [disabled]="isLoading">
+        <button
+          class="btn btn-primary px-4"
+          type="button"
+          (click)="sendMessage()"
+          [disabled]="isLoading || !inputMessage.trim()">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sources Modal -->
+  <div class="modal fade" [class.show]="showSources" [style.display]="showSources ? 'block' : 'none'" 
+       tabindex="-1" role="dialog" *ngIf="showSources">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-book me-2"></i>
+            Reference Sources
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeSources()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="accordion" id="sourcesAccordion">
+            <div class="accordion-item" 
+                 *ngFor="let group of (groupedResults | keyvalue); let i = index; trackBy: trackByDocTitle">
+              <h2 class="accordion-header" [id]="'heading' + i">
+                <button class="accordion-button" type="button" 
+                        [class.collapsed]="i !== 0"
+                        data-bs-toggle="collapse" 
+                        [attr.data-bs-target]="'#collapse' + i" 
+                        [attr.aria-expanded]="i === 0"
+                        [attr.aria-controls]="'collapse' + i">
+                  <i class="bi bi-file-earmark-text me-2"></i>
+                  <strong>{{ group.key }}</strong>
+                </button>
+              </h2>
+              <div [id]="'collapse' + i" 
+                   class="accordion-collapse collapse" 
+                   [class.show]="i === 0"
+                   [attr.aria-labelledby]="'heading' + i" 
+                   data-bs-parent="#sourcesAccordion">
+                <div class="accordion-body">
+                  <div class="list-group">
+                    <div class="list-group-item" *ngFor="let res of group.value">
+                      <p class="mb-2">{{ res.content_snippet }}</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                          <i class="bi bi-graph-up me-1"></i>
+                          Relevance: {{ res.similarity_score | number:'1.2-2' }}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeSources()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" [class.show]="showSources" *ngIf="showSources"></div>
+</div>

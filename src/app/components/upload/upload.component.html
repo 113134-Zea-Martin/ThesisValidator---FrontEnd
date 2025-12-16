@@ -1,0 +1,140 @@
+<div class="container-fluid h-100 d-flex flex-column p-0">
+  <!-- Header -->
+
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 overflow-auto bg-light p-4">
+    <div class="container" style="max-width: 1200px;">
+      <div class="row g-4">
+        <!-- Left Side: Upload Form -->
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Upload Your Thesis
+              </h5>
+            </div>
+            <div class="card-body">
+              <form (ngSubmit)="onSubmit()">
+                <!-- Thesis Title -->
+                <div class="mb-4">
+                  <label for="thesisTitle" class="form-label fw-bold">
+                    <i class="bi bi-pencil me-1"></i>
+                    Thesis Title
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-lg" 
+                    id="thesisTitle" 
+                    placeholder="e.g., Dark Matter Halos in Galaxy Clusters"
+                    [(ngModel)]="thesisTitle"
+                    name="thesisTitle"
+                    required>
+                </div>
+
+                <!-- Full Text Content -->
+                <div class="mb-4">
+                  <label for="fullText" class="form-label fw-bold">
+                    <i class="bi bi-file-text me-1"></i>
+                    Full Text Content
+                  </label>
+                  <textarea 
+                    class="form-control font-monospace" 
+                    id="fullText" 
+                    rows="12" 
+                    placeholder="Paste the entire text of your astronomy thesis here..."
+                    [(ngModel)]="fullText"
+                    name="fullText"
+                    required
+                    style="font-size: 0.9rem;"></textarea>
+                  <small class="form-text text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Supports plain text, markdown, or LaTeX formatted content
+                  </small>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                  type="submit" 
+                  class="btn btn-primary btn-lg w-100"
+                  [disabled]="isProcessing || !thesisTitle.trim() || !fullText.trim()">
+                  <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-2"></span>
+                  <i *ngIf="!isProcessing" class="bi bi-upload me-2"></i>
+                  {{ isProcessing ? 'Processing...' : 'Upload Document' }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Progress Panel -->
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white">
+              <h5 class="mb-0">
+                <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!isProcessing" class="bi bi-gear me-2"></i>
+                Processing Status
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Progress Bar -->
+              <div class="mb-4" *ngIf="isProcessing || progressPercentage > 0">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-clock-history me-1"></i>
+                  Current Progress
+                </label>
+                <div class="progress" style="height: 28px;">
+                  <div 
+                    class="progress-bar bg-primary progress-bar-striped progress-bar-animated" 
+                    role="progressbar" 
+                    [style.width.%]="progressPercentage"
+                    [attr.aria-valuenow]="progressPercentage" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                    {{ progressPercentage }}%
+                  </div>
+                </div>
+                <small class="text-muted d-block mt-2">
+                  <i class="bi bi-file-earmark me-1"></i>
+                  Processing: <strong>{{ currentFile }}</strong>
+                </small>
+              </div>
+
+              <!-- Processed Files List -->
+              <div *ngIf="processedFiles.length > 0">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-check-circle me-1"></i>
+                  Processed Documents ({{ processedFiles.length }})
+                </label>
+                <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+                  <div 
+                    *ngFor="let file of processedFiles" 
+                    class="list-group-item list-group-item-action">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-file-earmark-check text-success me-3 fs-4"></i>
+                      <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ file.name }}</h6>
+                        <small class="text-muted">
+                          <i class="bi bi-calendar-event me-1"></i>
+                          {{ file.date | date: 'MMM dd, yyyy - HH:mm' }}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="processedFiles.length === 0 && !isProcessing" class="text-center text-muted py-5">
+                <i class="bi bi-inbox display-1 mb-3"></i>
+                <p class="mb-0">No documents processed yet</p>
+                <small>Upload your first thesis to get started</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

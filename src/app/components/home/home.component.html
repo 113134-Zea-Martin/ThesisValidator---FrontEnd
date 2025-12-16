@@ -1,0 +1,198 @@
+<div class="container-fluid h-100 d-flex flex-column p-0">
+
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 overflow-auto bg-light">
+    <!-- Hero Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+      <div class="container" style="max-width: 1200px;">
+        <div class="row align-items-center text-white">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="display-5 fw-bold mb-4 text-white">
+              Analyze Your Astronomy Thesis with AI
+            </h2>
+            <p class="lead mb-4 text-white">
+              Upload your thesis documents and ask questions through our chat interface. 
+              Get answers based on your uploaded content with source citations.
+            </p>
+            <div class="d-flex gap-3">
+              <button class="btn btn-light btn-lg" (click)="navigateTo('/upload')">
+                <i class="bi bi-cloud-upload me-2"></i>
+                Upload Documents
+              </button>
+              <button class="btn btn-outline-light btn-lg" (click)="navigateTo('/chat')">
+                <i class="bi bi-chat-dots me-2"></i>
+                Start Chatting
+              </button>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-lg border-0" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-lightbulb text-warning fs-1 me-3"></i>
+                  <div class="text-white">
+                    <h5 class="mb-0 text-white fw-bold">How It Works</h5>
+                    <small class="text-white">Vector Search & LLM Integration</small>
+                  </div>
+                </div>
+                <ul class="list-unstyled text-white mb-0">
+                  <li class="mb-2">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <span class="text-white">Upload Your Thesis Text</span>
+                  </li>
+                  <li class="mb-2">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <span class="text-white">Document Processing & Indexing</span>
+                  </li>
+                  <li class="mb-2">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <span class="text-white">Ask Questions via Chat</span>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <span class="text-white">Get Answers with Citations</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Features -->
+    <section class="py-5">
+      <div class="container" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+          <h2 class="display-6 fw-bold mb-3">
+            <i class="bi bi-gear-fill text-primary me-2"></i>
+            Two Simple Tools
+          </h2>
+          <p class="text-muted">Upload your documents and chat with them</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6" *ngFor="let feature of features">
+            <div class="card h-100 shadow-sm border-0 hover-lift" style="cursor: pointer;"
+              (click)="navigateTo(feature.route)">
+              <div class="card-body p-5">
+                <div class="text-center mb-4">
+                  <div class="rounded-circle bg-{{feature.color}} bg-opacity-10 d-inline-flex align-items-center justify-content-center"
+                    style="width: 100px; height: 100px;">
+                    <i class="{{feature.icon}} text-{{feature.color}}" style="font-size: 3rem;"></i>
+                  </div>
+                </div>
+                <h3 class="card-title fw-bold mb-3 text-center">{{ feature.title }}</h3>
+                <p class="card-text text-muted text-center mb-4">{{ feature.description }}</p>
+                <div class="text-center">
+                  <button class="btn btn-{{feature.color}} btn-lg px-4">
+                    {{ feature.buttonText }}
+                    <i class="bi bi-arrow-right ms-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5 bg-white">
+      <div class="container" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+          <h2 class="display-6 fw-bold mb-3">
+            <i class="bi bi-diagram-3 text-success me-2"></i>
+            How It Works
+          </h2>
+          <p class="text-muted">Two-step process</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100 bg-primary bg-opacity-10">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                    style="width: 50px; height: 50px;">
+                    <h4 class="mb-0">1</h4>
+                  </div>
+                  <h5 class="fw-bold mb-0">Upload Your Thesis</h5>
+                </div>
+                <p class="text-muted mb-0">
+                  Paste your astronomy thesis text in the <strong>Upload</strong> section. 
+                  The system processes it and stores it for semantic search.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100 bg-success bg-opacity-10">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-3"
+                    style="width: 50px; height: 50px;">
+                    <h4 class="mb-0">2</h4>
+                  </div>
+                  <h5 class="fw-bold mb-0">Ask Questions</h5>
+                </div>
+                <p class="text-muted mb-0">
+                  Use the <strong>Chat</strong> to ask questions about your thesis. 
+                  Get answers extracted from your documents with references to the source text.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+      <div class="container" style="max-width: 1200px;">
+        <div class="row align-items-center">
+          <div class="col-lg-8 mb-4 mb-lg-0 text-center text-lg-start">
+            <h2 class="display-6 fw-bold mb-3">Ready to Start?</h2>
+            <p class="lead mb-0">
+              Upload your astronomy thesis and start asking questions.
+            </p>
+          </div>
+          <div class="col-lg-4 text-center text-lg-end">
+            <button class="btn btn-light btn-lg me-2 mb-2" (click)="navigateTo('/upload')">
+              <i class="bi bi-cloud-upload me-2"></i>
+              Upload Now
+            </button>
+            <button class="btn btn-outline-light btn-lg mb-2" (click)="navigateTo('/chat')">
+              <i class="bi bi-chat-square-text me-2"></i>
+              Start Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container" style="max-width: 1200px;">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-3 mb-md-0 text-center text-md-start">
+          <h5 class="mb-2">
+            <i class="bi bi-stars me-2"></i>
+            ThesisValidator
+          </h5>
+          <p class="text-white-50 mb-0">
+            Document analysis platform for astronomy research.
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="text-white-50 mb-0">
+            <small>© 2025 ThesisValidator. All rights reserved.</small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
