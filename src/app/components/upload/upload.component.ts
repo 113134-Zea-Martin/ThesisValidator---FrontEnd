@@ -1,8 +1,9 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { GenerateEmbeddingsRequest, UploadRequest, UploadResponse } from '../../interfaces/models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-upload',
@@ -11,7 +12,7 @@ import { GenerateEmbeddingsRequest, UploadRequest, UploadResponse } from '../../
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.css'
 })
-export class UploadComponent implements OnInit {
+export class UploadComponent implements OnInit, OnDestroy {
   thesisTitle: string = '';
   fullText: string = '';
   isProcessing: boolean = false;
@@ -19,14 +20,20 @@ export class UploadComponent implements OnInit {
   currentFile: string = '';
   processedFiles: { name: string; date: Date }[] = [];
 
+  subscriptions: Subscription[] = [];
+
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.loadProcessedDocuments();
   }
+  
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
     loadProcessedDocuments() {
-    this.apiService.getProcessedDocuments().subscribe({
+    const sus = this.apiService.getProcessedDocuments().subscribe({
       next: (docs) => {
         // Ajusta los campos según tu API: aquí se asume { title, processed_at } o { document_id, title }
         this.processedFiles = docs.map(d => ({
@@ -36,6 +43,7 @@ export class UploadComponent implements OnInit {
       },
       error: (err) => console.error('Error al obtener documentos:', err)
     });
+    this.subscriptions.push(sus);
   }
 
     get isFormInvalid(): boolean {
@@ -54,7 +62,7 @@ export class UploadComponent implements OnInit {
     this.progressPercentage = 10;
     this.currentFile = thesisData.title;
 
-    this.apiService.uploadThesis(thesisData).subscribe({
+    const sus = this.apiService.uploadThesis(thesisData).subscribe({
       next: (response: UploadResponse) => {
         this.progressPercentage = 50;
 
@@ -62,7 +70,7 @@ export class UploadComponent implements OnInit {
           document_id: response.document_id
         };
 
-        this.apiService.generateEmbeddings(embeddingsReq).subscribe({
+        const susEmbeddings = this.apiService.generateEmbeddings(embeddingsReq).subscribe({
           next: () => {
             this.progressPercentage = 100;
             this.processedFiles.unshift({
@@ -77,12 +85,14 @@ export class UploadComponent implements OnInit {
             this.isProcessing = false;
           }
         });
+        this.subscriptions.push(susEmbeddings);
       },
       error: (error) => {
         console.error('Upload failed:', error);
         this.isProcessing = false;
       }
     });
+    this.subscriptions.push(sus);
   }
 
   onSubmit() {

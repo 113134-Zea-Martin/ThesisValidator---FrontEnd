@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AskRequest, AskResponse, ContextUsed, SearchRequest, SearchResponse, Result, ConversationsResponse } from '../../interfaces/models';
+import { Subscription } from 'rxjs';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,7 +19,7 @@ interface Message {
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   inputMessage = '';
   isLoading = false;
@@ -26,14 +27,20 @@ export class ChatComponent implements OnInit {
   currentResults: Result[] = [];
   groupedResults: Record<string, Result[]> = {};
 
+  suscriptions: Subscription[] = [];
+
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.messages.push({
       role: 'assistant',
-      content: 'Welcome to ThesisValidator AI! Ask me anything about your thesis documents.',
+      content: 'Bienvenido al asistente de chat. ¿En qué puedo ayudarte hoy?',
       timestamp: new Date()
     });
+  }
+
+  ngOnDestroy(): void {
+    this.suscriptions.forEach(sus => sus.unsubscribe());
   }
 
   sendMessage(): void {
@@ -51,7 +58,7 @@ export class ChatComponent implements OnInit {
 
     const askRequest: AskRequest = { question };
 
-    this.apiService.generateAsk(askRequest).subscribe({
+     const sus = this.apiService.generateAsk(askRequest).subscribe({
       next: (response: AskResponse) => {
         this.messages.push({
           role: 'assistant',
@@ -71,17 +78,18 @@ export class ChatComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    this.suscriptions.push(sus);
   }
 
   loadPreviousConversations(): void {
     this.isLoading = true;
     
-    this.apiService.getConversations().subscribe({
+    const sus = this.apiService.getConversations().subscribe({
       next: (conversations: ConversationsResponse[]) => {
         // Limpiar mensajes actuales excepto el de bienvenida
         this.messages = [{
           role: 'assistant',
-          content: 'Loading previous conversations...',
+          content: 'Cargando conversaciones anteriores...',
           timestamp: new Date()
         }];
 
@@ -112,7 +120,7 @@ export class ChatComponent implements OnInit {
         if (conversations.length > 0) {
           this.messages.push({
             role: 'assistant',
-            content: `Loaded ${conversations.length} previous conversation(s). You can continue asking questions!`,
+            content: `Se han cargado ${conversations.length} conversaciones anteriores.`,
             timestamp: new Date()
           });
         } else {
@@ -135,6 +143,7 @@ export class ChatComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    this.suscriptions.push(sus);
   }
 
   viewSources(contextUsed?: ContextUsed[]): void {
@@ -144,7 +153,7 @@ export class ChatComponent implements OnInit {
     this.isLoading = true;
     const searchRequest: SearchRequest = { query };
 
-    this.apiService.generateSearch(searchRequest).subscribe({
+    const sus = this.apiService.generateSearch(searchRequest).subscribe({
       next: (response: SearchResponse) => {
         this.currentResults = response.results;
         this.groupedResults = this.groupByTitle(this.currentResults);
@@ -159,6 +168,7 @@ export class ChatComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    this.suscriptions.push(sus);
   }
 
   private groupByTitle(results: Result[]): Record<string, Result[]> {
