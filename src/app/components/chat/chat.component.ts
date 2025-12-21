@@ -72,7 +72,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error sending message:', error);
         this.messages.push({
           role: 'assistant',
-          content: 'Sorry, there was an error processing your request. Please try again.',
+          content: 'Disculpa, hubo un error al procesar tu solicitud. Por favor, intenta de nuevo más tarde.',
           timestamp: new Date()
         });
         this.isLoading = false;
@@ -126,7 +126,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         } else {
           this.messages.push({
             role: 'assistant',
-            content: 'No previous conversations found. Start by asking a question!',
+            content: 'No se encontraron conversaciones anteriores.',
             timestamp: new Date()
           });
         }
@@ -137,7 +137,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error loading conversations:', error);
         this.messages = [{
           role: 'assistant',
-          content: 'Sorry, there was an error loading previous conversations. Please try again.',
+          content: 'Disculpa, hubo un error al cargar las conversaciones anteriores. Por favor, intenta de nuevo más tarde.',
           timestamp: new Date()
         }];
         this.isLoading = false;
