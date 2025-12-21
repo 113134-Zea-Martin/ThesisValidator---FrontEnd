@@ -18,7 +18,7 @@ import {
 })
 export class ApiService {
 
-  API_MAIN_URL = 'http://127.0.0.1:8000';
+  API_MAIN_URL = API_MAIN_URL
 
   constructor(private http: HttpClient) { }
 
