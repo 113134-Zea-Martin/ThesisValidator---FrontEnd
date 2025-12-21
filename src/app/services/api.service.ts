@@ -12,13 +12,14 @@ import {
   AskResponse,
   ConversationsResponse
 } from '../interfaces/models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  API_MAIN_URL = API_MAIN_URL
+  API_MAIN_URL = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
