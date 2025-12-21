@@ -12,7 +12,8 @@ import {
   AskResponse,
   ConversationsResponse
 } from '../interfaces/models';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,8 @@ export class ApiService {
     return this.http.post<AskResponse>(`${this.API_MAIN_URL}/ask`, ask);
   }
 
-  getConversations(): Observable<ConversationsResponse[]> {
+  getConversations(): Observable<ConversationsResponse[]> {console.log(environment.apiUrl);
+
     return this.http.get<ConversationsResponse[]>(`${this.API_MAIN_URL}/conversations`);
   }
 }
