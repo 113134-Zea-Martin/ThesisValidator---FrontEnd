@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { GenerateEmbeddingsRequest, UploadRequest, UploadResponse } from '../../interfaces/models';
 import { Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [FormsModule, CommonModule, DatePipe],
+  imports: [FormsModule, CommonModule, DatePipe, RouterLink],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.css'
 })
@@ -19,6 +20,8 @@ export class UploadComponent implements OnInit, OnDestroy {
   progressPercentage: number = 0;
   currentFile: string = '';
   processedFiles: { name: string; date: Date }[] = [];
+  successMessage: string = '';
+
 
   subscriptions: Subscription[] = [];
 
@@ -79,6 +82,9 @@ export class UploadComponent implements OnInit, OnDestroy {
             });
             this.isProcessing = false;
             this.currentFile = '';
+              this.successMessage = '¡Documento procesado! Ya puedes acceder al chat.';
+              // Redirigir automáticamente después de 2 segundos (opcional)
+              // setTimeout(() => this.router.navigate(['/chat']), 2000);
           },
           error: (err) => {
             console.error('Embeddings failed:', err);

@@ -16,6 +16,12 @@
               </h5>
             </div>
             <div class="card-body">
+              <!-- ALERTA DE ÉXITO AQUÍ -->
+              <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                {{ successMessage }}
+                <a routerLink="/chat" class="btn btn-success btn-sm ms-3">Ir al chat</a>
+                <button type="button" class="btn-close" aria-label="Close" (click)="successMessage=''"></button>
+              </div>
               <form (ngSubmit)="onSubmit()">
                 <!-- Thesis Title -->
                 <div class="mb-4">
@@ -23,14 +29,9 @@
                     <i class="bi bi-pencil me-1"></i>
                     Thesis Title
                   </label>
-                  <input 
-                    type="text" 
-                    class="form-control form-control-lg" 
-                    id="thesisTitle" 
-                    placeholder="e.g., Dark Matter Halos in Galaxy Clusters"
-                    [(ngModel)]="thesisTitle"
-                    name="thesisTitle"
-                    required>
+                  <input type="text" class="form-control form-control-lg" id="thesisTitle"
+                    placeholder="e.g., Dark Matter Halos in Galaxy Clusters" [(ngModel)]="thesisTitle"
+                    name="thesisTitle" required>
                 </div>
 
                 <!-- Full Text Content -->
@@ -39,15 +40,9 @@
                     <i class="bi bi-file-text me-1"></i>
                     Full Text Content
                   </label>
-                  <textarea 
-                    class="form-control font-monospace" 
-                    id="fullText" 
-                    rows="12" 
-                    placeholder="Paste the entire text of your astronomy thesis here..."
-                    [(ngModel)]="fullText"
-                    name="fullText"
-                    required
-                    style="font-size: 0.9rem;"></textarea>
+                  <textarea class="form-control font-monospace" id="fullText" rows="12"
+                    placeholder="Paste the entire text of your astronomy thesis here..." [(ngModel)]="fullText"
+                    name="fullText" required style="font-size: 0.9rem;"></textarea>
                   <small class="form-text text-muted">
                     <i class="bi bi-info-circle me-1"></i>
                     Supports plain text, markdown, or LaTeX formatted content
@@ -55,9 +50,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button 
-                  type="submit" 
-                  class="btn btn-primary btn-lg w-100"
+                <button type="submit" class="btn btn-primary btn-lg w-100"
                   [disabled]="isProcessing || !thesisTitle.trim() || !fullText.trim()">
                   <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-2"></span>
                   <i *ngIf="!isProcessing" class="bi bi-upload me-2"></i>
@@ -86,19 +79,21 @@
                   Current Progress
                 </label>
                 <div class="progress" style="height: 28px;">
-                  <div 
-                    class="progress-bar bg-primary progress-bar-striped progress-bar-animated" 
-                    role="progressbar" 
-                    [style.width.%]="progressPercentage"
-                    [attr.aria-valuenow]="progressPercentage" 
-                    aria-valuemin="0" 
+                  <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar"
+                    [style.width.%]="progressPercentage" [attr.aria-valuenow]="progressPercentage" aria-valuemin="0"
                     aria-valuemax="100">
                     {{ progressPercentage }}%
+                    <span *ngIf="progressPercentage === 100 && !isProcessing"> - Completed!</span>
                   </div>
                 </div>
                 <small class="text-muted d-block mt-2">
                   <i class="bi bi-file-earmark me-1"></i>
-                  Processing: <strong>{{ currentFile }}</strong>
+                  <ng-container *ngIf="isProcessing">
+                    Processing: <strong>{{ currentFile }}</strong>
+                  </ng-container>
+                  <ng-container *ngIf="!isProcessing && progressPercentage === 100">
+                    <strong>All files processed successfully!</strong>
+                  </ng-container>
                 </small>
               </div>
 
@@ -109,9 +104,7 @@
                   Processed Documents ({{ processedFiles.length }})
                 </label>
                 <div class="list-group" style="max-height: 400px; overflow-y: auto;">
-                  <div 
-                    *ngFor="let file of processedFiles" 
-                    class="list-group-item list-group-item-action">
+                  <div *ngFor="let file of processedFiles" class="list-group-item list-group-item-action">
                     <div class="d-flex align-items-center">
                       <i class="bi bi-file-earmark-check text-success me-3 fs-4"></i>
                       <div class="flex-grow-1">
