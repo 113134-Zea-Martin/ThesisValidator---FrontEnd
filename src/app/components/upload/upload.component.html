@@ -79,11 +79,13 @@
                   Current Progress
                 </label>
                 <div class="progress" style="height: 28px;">
-                  <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar"
-                    [style.width.%]="progressPercentage" [attr.aria-valuenow]="progressPercentage" aria-valuemin="0"
-                    aria-valuemax="100">
-                    {{ progressPercentage }}%
-                    <span *ngIf="progressPercentage === 100 && !isProcessing"> - Completed!</span>
+                  <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated text-nowrap"
+                    role="progressbar" [style.width.%]="progressPercentage" [attr.aria-valuenow]="progressPercentage"
+                    aria-valuemin="0" aria-valuemax="100">
+                    <ng-container *ngIf="progressPercentage === 100 && !isProcessing; else showPercentage">
+                      100% - Completed!
+                    </ng-container>
+                    <ng-template #showPercentage>{{ progressPercentage }}%</ng-template>
                   </div>
                 </div>
                 <small class="text-muted d-block mt-2">
